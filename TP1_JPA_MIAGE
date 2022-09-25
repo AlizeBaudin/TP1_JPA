@@ -1,0 +1,172 @@
+import miage.IF.repository.StudentEntityRepository;
+import miage.IF.service.StudentService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+
+
+//Exercice 1 
+@Entity @Table(name= "student")
+
+public class student {
+	@Id @GenerateValue(strategy="student_id_sequence")
+	private int idstudent;
+	@Column(name="First_Name")
+	private String FirstName;
+	@Column(name="Last_Name")
+	private String LastName;
+	@Column(name="age")
+	private int Age;
+	@Column(name="email")
+	private String email;
+	
+	public student() {
+		this( "unknown", "unknown", 0, "unknown" );
+	}
+	
+//return all list - not request on TD1
+	@Override
+	public String toString() {
+		return "Student [idstudent=" + idstudent + ", FirstName=" + FirstName +
+	               ", LastName=" + LastName + ", Age=" + Age + ", Email= " + email + "]";
+	}
+		
+	public student( String FirstName, String LastName, int Age, String email) {
+		this.setFirstName(FirstName);
+		this.setLastName(LastName);
+		this.setAge(Age);
+		this.setEmail(email);
+	}
+	private void setFirstName(String FirstName) {
+		// TODO Auto-generated method stub
+		this.FirstName = FirstName;
+	}
+	
+	private void setLastName(String LastName) {
+		// TODO Auto-generated method stub
+		this.LastName = LastName;
+	}
+
+	private void setAge(int Age) {
+		// TODO Auto-generated method stub
+		this.Age = Age;
+	}
+
+	private void setEmail(String email) {
+		// TODO Auto-generated method stub
+		this.email = email;
+	}
+	
+	
+	//Find by Id Student
+	public int getIdstudent() {
+		return idstudent;
+	}
+	
+	//Get First and Last Name
+	public String getFirstAndLastName(String firstName, String lastName) {
+		return FirstName;
+		return LastName ;
+	}
+	
+	//Get by mails
+	public String getEmail(String email) {
+		return idstudent;
+	}
+	// Get age
+	public int getage() {
+		return Age;
+	}
+}	
+	
+//Exercice 2
+@ResController @AllArgsConstructor
+
+public class StudentAPI{
+	
+	private final StudentService studentService;
+	private final StudentEntityRepository studentEntityRepository;
+	
+	@GetMapping("student")
+	public List<student> getAll(){
+			return  studentService.getAll();
+			return  studentEntityRepository.getAll();
+	}
+	
+	@GetMapping("fisrt_name")
+	public List<student> getFisrtAndLastName() {
+		return student.getFisrtAndLastName(FirstName, null);
+	}
+	
+	@GetMapping("by_email")
+	public List<student> getemail(){
+		return student.getEmail(String email)
+	}
+	
+
+// twist for get age of student over twenty
+	@GetMapping("student_over_twenty")
+	public int getOverTwenty1() {
+			List<int> res = new ArrayList<>();
+			for(int i : student.getage()) {
+				if(i > 20) {
+					res.add(i);	
+				}
+			return res;
+			}
+	}
+	
+// add student	
+	@PutMapping("add_student")
+	public student update(@RequestBody Student s) {
+		return studentEntityRepository.save(s);
+	}
+
+//update email student
+	@PutMapping("update_email")
+	public student update(@RequestBody Student s, @RequestBody String email) {
+		Optional<student> Student = studentEntityRepository.findById(s.getIdstudent());
+		student.ifPresent(value -> value.setEmail(email));
+		return studentEntityRepository.save(Student.orElse(null));
+	}
+
+//update last name
+	@PutMapping("update_add_student")
+	public student update(@RequestBody Student s, @RequestBody String LastName) {
+		Optional<student> Student = studentEntityRepository.findById(s.getIdstudent());
+		student.ifPresent(value -> value.setLastName(LastName));
+		return studentEntityRepository.save(Student.orElse(null));
+	}
+//update age 	
+	@PutMapping("update_age_student")
+	public student update(@RequestBody Student s, @RequestBody int Age) {
+		Optional<student> Student = studentEntityRepository.findById(s.getIdstudent());
+		student.ifPresent(value -> value.setAge(age));
+		return studentEntityRepository.save(Student.orElse(null));
+	}
+	
+// add 1 year for age of student
+	public int getLevelUpAge() {
+		List<int> res = new ArrayList<>();
+		for(int i : student.getage()) {
+				res.add(i+1);
+		return res;
+		}
+	}
+	
+	@PutMapping("levelup_1_year_student")
+	public student update(@RequestBody Student s, @Request int Age) {
+		Optional<student> Student = studentEntityRepository.findById(s.getIdstudent());
+		student.ifPresent(value -> value.getLevelUpAge(age));
+		return studentEntityRepository.save(Student.orElse(null));
+	}
+	
+//delete student
+	@DeleteMapping("student/email/{email}")
+	public void delete(@PathVariable String email) {
+	Optional<student> Student = studentEntityRepository.getEmail(email);
+	studentEntityRepository.delete(Student.orElse(null));
+	}
+}
